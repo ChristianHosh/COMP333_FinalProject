@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="610.0" prefWidth="530.0" stylesheets="@styles/reciptStyle.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.comp333_finalproject.Controllers.ReceiptWindowController">
+   <children>
+      <Label fx:id="customerNameLabel" layoutX="14.0" layoutY="14.0" text="Customer Name" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+      <Label fx:id="orderIDLabel" layoutX="14.0" layoutY="49.0" text="Order ID" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="45.0" />
+      <Label fx:id="orderPriceLabel" layoutX="14.0" layoutY="76.0" text="Order Price" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="75.0" />
+      <TableView fx:id="itemsTable" layoutX="15.0" layoutY="121.0" prefHeight="478.0" prefWidth="414.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="115.0">
+        <columns>
+          <TableColumn fx:id="tCol_itemName" editable="false" prefWidth="216.80005168914795" resizable="false" sortable="false" text="Item Name" />
+          <TableColumn fx:id="tCol_itemBrand" editable="false" prefWidth="123.19993591308594" resizable="false" sortable="false" text="Brand" />
+            <TableColumn fx:id="tCol_itemColor" editable="false" prefWidth="92.800048828125" resizable="false" sortable="false" text="Color" />
+            <TableColumn fx:id="tCol_itemPrice" editable="false" prefWidth="65.5999755859375" resizable="false" sortable="false" text="Price" />
+        </columns>
+      </TableView>
+      <ImageView fitHeight="90.0" fitWidth="141.0" layoutX="350.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+         <image>
+            <Image url="@images/logo.jpg" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

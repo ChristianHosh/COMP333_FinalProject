@@ -10,12 +10,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,9 +46,6 @@ public class UserPanelController {
 
     @FXML
     private TableView<ItemOrder> itemOrderTable;
-
-    @FXML
-    private TableColumn<ItemOrder, Integer> itemOrderTable_itemID;
 
     @FXML
     private TableColumn<ItemOrder, String> itemOrderTable_itemName;
@@ -79,6 +79,8 @@ public class UserPanelController {
         int row = 0;
         try {
             for (Item item : items) {
+                if (item.getQuantity() == 0)
+                    continue;
                 FXMLLoader fxmlLoader = new FXMLLoader(Driver.class.getResource("itemCard.fxml"));
                 VBox vBox = fxmlLoader.load();
                 CardController cardController = fxmlLoader.getController();
@@ -130,7 +132,64 @@ public class UserPanelController {
         deleteStatement.setInt(1,selected.getItemID());
         deleteStatement.setInt(2,currentOrder.getOrderID());
         deleteStatement.execute();
+        deleteConnection.close();
+
+        String updateQuery = "UPDATE ordert SET ordert.totalPrice = ordert.totalPrice - ? WHERE ordert.orderID = ?";
+        Connection updateConnection = databaseConnection.connectDB();
+        PreparedStatement updateStatement = updateConnection.prepareStatement(updateQuery);
+        updateStatement.setDouble(1,selected.getItemPrice());
+        updateStatement.setInt(2,currentOrder.getOrderID());
+        updateStatement.execute();
+        updateConnection.close();
+
+        currentOrder.setOrderTotalPrice(currentOrder.getOrderTotalPrice() - selected.getItemPrice());
         updateOrderItem();
+    }
+
+    @FXML
+    void finalizeOrder(ActionEvent event) throws SQLException, ClassNotFoundException, IOException {
+        ArrayList<Integer> currentOrderItemIDs = getCurrentOrderItems();
+        updateItemQuantities(currentOrderItemIDs);
+        String customerName = currentUser.getFirstName() + " " + currentUser.getLastName();
+        ReceiptWindowController.setData(customerName,currentOrder.getOrderID(),currentOrder.getOrderTotalPrice(),currentOrderItemIDs);
+
+        Stage receiptStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(Driver.class.getResource("reciptWindow.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        receiptStage.setTitle("Receipt");
+        receiptStage.setScene(scene);
+        receiptStage.setResizable(false);
+        receiptStage.show();
+
+        newOrder();
+        updateOrderItem();
+    }
+
+    private void updateItemQuantities(ArrayList<Integer> currentOrderItemIDs) throws SQLException, ClassNotFoundException {
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        Connection updateConnection = databaseConnection.connectDB();
+        String updateQuery = "UPDATE items SET Quantity = Quantity - 1 WHERE itemID = ?";
+        PreparedStatement updateStatement = updateConnection.prepareStatement(updateQuery);
+        for (Integer itemID : currentOrderItemIDs){
+            updateStatement.setInt(1,itemID);
+            updateStatement.execute();
+        }
+        updateConnection.close();
+    }
+
+    private ArrayList<Integer> getCurrentOrderItems() throws SQLException, ClassNotFoundException {
+        ArrayList<Integer> orderItemsIDs = new ArrayList<>();
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        Connection selectItemIDConnection = databaseConnection.connectDB();
+        String selectItemIDQuery = "SELECT itemID FROM ecommerce.item_order WHERE orderID = ?";
+        PreparedStatement selectItemIDStatement = selectItemIDConnection.prepareStatement(selectItemIDQuery);
+        selectItemIDStatement.setInt(1,currentOrder.getOrderID());
+        ResultSet selectItemIDResult = selectItemIDStatement.executeQuery();
+        while (selectItemIDResult.next()){
+            orderItemsIDs.add(selectItemIDResult.getInt(1));
+        }
+        selectItemIDConnection.close();
+        return orderItemsIDs;
     }
 
     // SHOW ORDER ITEMS
@@ -149,12 +208,10 @@ public class UserPanelController {
     }
 
     private void setValueFactoryOrderItems() {
-        itemOrderTable_itemID.setCellValueFactory(new PropertyValueFactory<>("itemID"));
         itemOrderTable_itemName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         itemOrderTable_itemPrice.setCellValueFactory(new PropertyValueFactory<>("itemPrice"));
     }
 
-    // BROWSER SIDE BUTTONS
 
     // NEW ORDERS
     @FXML
@@ -223,6 +280,8 @@ public class UserPanelController {
         }catch (SQLException | ClassNotFoundException exception){
             exception.printStackTrace();
         }
+        currentOrder.setOrderTotalPrice(currentOrder.getOrderTotalPrice() + item.getPrice());
+
     }
 
 }

@@ -1,0 +1,9 @@
+.label {
+    -fx-font-family: monospace;
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+}
+
+.image-view {
+    -fx-blend-mode: MULTIPLY;
+}

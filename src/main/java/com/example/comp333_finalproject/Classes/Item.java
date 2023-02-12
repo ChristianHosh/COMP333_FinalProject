@@ -19,6 +19,13 @@ public class Item {
         this.imagePath = imagePath;
     }
 
+    public Item(String name, String brand,  String color, double price) {
+        this.name = name;
+        this.brand = brand;
+        this.price = price;
+        this.color = color;
+    }
+
     // GETTERS & SETTERS
     public int getId() {
         return id;

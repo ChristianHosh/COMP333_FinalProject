@@ -22,7 +22,7 @@
          <children>
             <Button mnemonicParsing="false" onAction="#browseItems" text="Browse" />
             <Button mnemonicParsing="false" onAction="#showCustomerOrders" text="My Orders" />
-            <Pane prefHeight="47.0" prefWidth="300.0" />
+            <Pane prefHeight="47.0" prefWidth="420.0" />
             <VBox prefHeight="47.0" prefWidth="200.0" spacing="5.0">
                <children>
                   <Label fx:id="label_userFullName" text="Christian Hosh" />
@@ -65,9 +65,8 @@
          <children>
             <TableView fx:id="itemOrderTable" layoutX="14.0" layoutY="14.0" prefHeight="495.0" prefWidth="385.0">
                <columns>
-                  <TableColumn fx:id="itemOrderTable_itemID" editable="false" prefWidth="75.0" text="Item ID" />
-                  <TableColumn fx:id="itemOrderTable_itemName" editable="false" prefWidth="127.20001220703125" text="Item Name" />
-                  <TableColumn fx:id="itemOrderTable_itemPrice" editable="false" prefWidth="127.20001220703125" text="Price" />
+                  <TableColumn fx:id="itemOrderTable_itemName" editable="false" prefWidth="245.60000610351562" text="Item Name" />
+                  <TableColumn fx:id="itemOrderTable_itemPrice" editable="false" prefWidth="94.4000244140625" text="Price" />
                </columns>
             </TableView>
             <HBox alignment="CENTER" layoutX="14.0" layoutY="522.0" prefHeight="100.0" prefWidth="386.0" spacing="20.0">
@@ -76,6 +75,7 @@
                </padding>
                <children>
                   <Button mnemonicParsing="false" onAction="#removeSelectedItem" styleClass="side-button" text="Remove Selected Item" />
+                  <Button mnemonicParsing="false" onAction="#finalizeOrder" styleClass="side-button" text="Order" />
                </children>
             </HBox>
          </children>

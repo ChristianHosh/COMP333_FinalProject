@@ -436,7 +436,11 @@ public class AdminController {
         fileChooser.setTitle("Choose Image");
         Stage thisStage = (Stage) button_items.getScene().getWindow();
         File chosenFile = fileChooser.showOpenDialog(thisStage);
-        return chosenFile.getAbsolutePath();
+//        return null;
+        String path = chosenFile.getAbsolutePath();
+//        path = path.replace("\\","\\\\");
+        System.out.println("PATH: " + path);
+        return path;
     }
 
     @FXML
@@ -444,7 +448,7 @@ public class AdminController {
         String itemName = textfield_itemName.getText();
         String itemBrand = textfield_itemBrand.getText();
         String itemColor = textfield_itemColor.getText();
-        String imagePath =  "file:" + addImageToItem();
+        String imagePath = addImageToItem();
         int itemQuantity = 0;
         double itemPrice = 0.0;
         try{
@@ -492,7 +496,7 @@ public class AdminController {
         ps.setInt(3,itemQuantity);
         ps.setDouble(4,itemPrice);
         ps.setString(5,itemColor);
-        ps.setString(6,"ANYTHING");
+        ps.setString(6,imagePath);
         try {
             ps.execute();
         }catch (Exception e){
